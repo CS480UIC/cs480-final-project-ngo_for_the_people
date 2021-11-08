@@ -11,6 +11,9 @@ import Login from "./components/Login.component"
 import AddCampaign from "./components/add-campaign.component";
 import CampaignsList from "./components/campaigns-list.component";
 import Campaign from "./components/campaign.component";
+import Donor from "./components/donor.component";
+import DonorsList from "./components/donors-list.component";
+import AddDonor from "./components/add-donor.component";
 
 class App extends Component {
   render() {
@@ -38,7 +41,9 @@ class App extends Component {
               </Link>
             </li>
             <li>
-            
+            <Link to={"/donors"} className="nav-link">
+                Donors
+              </Link>
             </li>
           </div>
         </nav>
@@ -53,6 +58,9 @@ class App extends Component {
             <Route exact path="/campaigns" component={CampaignsList} />
             <Route exact path="/addcampaign" component={AddCampaign} />
             <Route path="/campaigns/:id" component={Campaign} />
+            <Route exact path="/donors" component={DonorsList} />
+            <Route exact path="/adddonor" component={AddDonor} />
+            <Route path="/donors/:id" component={Donor} />
           </Switch>
         </div>
       </div>

@@ -1,47 +1,46 @@
 import React, { Component } from "react";
-import CampaignDataService from "../services/campaign.service";
+import DonorDataService from "../services/donor.service";
 import { Link } from "react-router-dom";
-import '../campaign.css';
-//export default CampaignList;
+import '../donor.css';
 
 export default class extends Component {
   constructor(props) {
     super(props);
-    this.onChangeSearchCampaign_id = this.onChangeSearchCampaign_id.bind(this);
-    this.retrieveCampaigns = this.retrieveCampaigns.bind(this);
+    this.onChangeSearchDonor_id = this.onChangeSearchDonor_id.bind(this);
+    this.retrieveDonors = this.retrieveDonors.bind(this);
     this.refreshList = this.refreshList.bind(this);
-    this.setActiveCampaign = this.setActiveCampaign.bind(this);
-    this.removeAllCampaigns = this.removeAllCampaigns.bind(this);
-    this.searchCampaign_id = this.searchCampaign_id.bind(this);
+    this.setActiveDonor = this.setActiveDonor.bind(this);
+    this.removeAllDonors= this.removeAllDonors.bind(this);
+    this.searchDonor_id = this.searchDonor_id.bind(this);
 
     this.state = {
-      campaigns: [],
-      currentCampaign: null,
+      donors: [],
+      currentDonor: null,
       currentIndex: -1,
-      searchCampaign: ""
+      searchDonor: ""
     };
   }
 
   componentDidMount() {
-    this.retrieveCampaigns();
+    this.retrieveDonors();
     if(!sessionStorage.getItem("login")) {
       window.location = "/login"
     }
   }
 
-  onChangeSearchCampaign_id(e) {
-    const searchCampaign_id = e.target.value;
+  onChangeSearchDonor_id(e) {
+    const searchDonor_id = e.target.value;
 
     this.setState({
-      searchCampaign_id: searchCampaign_id
+      searchDonor_id: searchDonor_id
     });
   }
 
-  retrieveCampaigns() {
-    CampaignDataService.getAll()
+  retrieveDonors() {
+    DonorDataService.getAll()
       .then(response => {
         this.setState({
-          campaigns: response.data
+          donors: response.data
         });
         console.log(response.data);
       })
@@ -51,22 +50,22 @@ export default class extends Component {
   }
 
   refreshList() {
-    this.retrieveCampaigns();
+    this.retrieveDonors();
     this.setState({
-      currentCampaign: null,
+      currentDonor: null,
       currentIndex: -1
     });
   }
 
-  setActiveCampaign(campaign, index) {
+  setActiveDonor(donor, index) {
     this.setState({
-      currentCampaign: campaign,
+      currentDonor: donor,
       currentIndex: index
     });
   }
 
-  removeAllCampaigns() {
-    CampaignDataService.deleteAll()
+  removeAllDonors() {
+    DonorDataService.deleteAll()
       .then(response => {
         console.log(response.data);
         this.refreshList();
@@ -76,11 +75,11 @@ export default class extends Component {
       });
   }
 
-  searchCampaign_id() {
-    CampaignDataService.findById(this.state.searchCampaign_id)
+  searchDonor_id() {
+    DonorDataService.findById(this.state.searchDonor_id)
       .then(response => {
         this.setState({
-          campaigns: response.data
+          donors: response.data
         });
         console.log(response.data);
       })
@@ -88,12 +87,12 @@ export default class extends Component {
         console.log(e);
       });
   }
-  addCampaign() {
-    window.location="/addcampaign"
+  addDonor() {
+    window.location="/adddonor"
   }
 
   render() {
-    const { searchCampaign_id, campaigns, currentCampaign, currentIndex } = this.state;
+    const { searchDonor_id, donors, currentDonor, currentIndex } = this.state;
 
     return (
       <div className="list row">
@@ -102,15 +101,15 @@ export default class extends Component {
             <input
               type="text"
               className="form-control"
-              placeholder="Search by campaign_id"
-              value={searchCampaign_id}
-              onChange={this.onChangeSearchCampaign_id}
+              placeholder="Search by donor_id"
+              value={searchDonor_id}
+              onChange={this.onChangeSearchDonor_id}
             />
             <div className="input-group-append">
               <button
                 className="btn btn-outline-secondary"
                 type="button"
-                onClick={this.searchCampaign_id}
+                onClick={this.searchDonor_id}
               >
                 Search
               </button>
@@ -120,7 +119,7 @@ export default class extends Component {
                 className="btn btn-outline-secondary"
                 id="add_btn"
                 type="button"
-                onClick={this.addCampaign}
+                onClick={this.addDonor}
               >
               Add
               </button>
@@ -129,20 +128,20 @@ export default class extends Component {
           
         </div>
         <div className="col-md-6">
-          <h4>Campaigns List</h4>
+          <h4>Donors List</h4>
 
           <ul className="list-group">
-            {campaigns &&
-              campaigns.map((campaign, index) => (
+            {donors &&
+              donors.map((donor, index) => (
                 <li
                   className={
                     "list-group-item " +
                     (index === currentIndex ? "active" : "")
                   }
-                  onClick={() => this.setActiveCampaign(campaign, index)}
+                  onClick={() => this.setActiveDonor(donor, index)}
                   key={index}
                 >
-                  {campaign.campaign_id}
+                  {donor.donor_id}
                 </li>
               ))}
           </ul>
@@ -155,48 +154,37 @@ export default class extends Component {
           </button> */}
         </div>
         <div className="col-md-6">
-          {currentCampaign ? (
+          {currentDonor ? (
             <div>
-              <h4>Campaign</h4>
+              <h4>Donor</h4>
               <div>
                 <label>
-                  <strong>Id:</strong>
+                  <strong>ID:</strong>
                 </label>{" "}
-                {currentCampaign.campaign_id}
+                {currentDonor.donor_id}
               </div>
+              <div>
+                <label>
+                  <strong>SSN:</strong>
+                </label>{" "}
+                {currentDonor.donor_ssn}
+              </div>
+
               <div>
                 <label>
                   <strong>Name:</strong>
                 </label>{" "}
-                {currentCampaign.campaign_name}
+                {currentDonor.donor_name}
               </div>
               <div>
                 <label>
-                  <strong>Details:</strong>
+                  <strong>Contact:</strong>
                 </label>{" "}
-                {currentCampaign.campaign_details}
-              </div>
-              <div>
-                <label>
-                  <strong>Location:</strong>
-                </label>{" "}
-                {currentCampaign.campaign_location}
-              </div>
-              <div>
-                <label>
-                  <strong>Employee id:</strong>
-                </label>{" "}
-                {currentCampaign.campaign_employee_id}
-              </div>
-              <div>
-                <label>
-                  <strong>Budget:</strong>
-                </label>{" "}
-                {currentCampaign.campaign_budget}
+                {currentDonor.donor_contact}
               </div>
 
               <Link
-                to={"/campaigns/" + currentCampaign.campaign_id}
+                to={"/donors/" + currentDonor.donor_id}
                 className="text text-primary"
               >
                 Edit
@@ -205,7 +193,7 @@ export default class extends Component {
           ) : (
             <div>
               <br />
-              <p>Please click on a Campaign</p>
+              <p>Please click on a Donor</p>
             </div>
           )}
         </div>
